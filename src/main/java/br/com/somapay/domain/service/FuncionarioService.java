@@ -1,5 +1,6 @@
 package br.com.somapay.domain.service;
 
+import br.com.somapay.domain.exceptions.EntidadeJaExiste;
 import br.com.somapay.domain.exceptions.EntidadeNaoEncontradaException;
 import br.com.somapay.domain.model.ContaFuncionario;
 import br.com.somapay.domain.model.Funcionario;
@@ -41,14 +42,17 @@ public class FuncionarioService {
 
     public Funcionario salvar(Funcionario funcionario) {
 
-        empresaService.buscarEmpresa(funcionario.getEmpresa().getId());
-
 
         // converte cpf para sem caracteres especiais e garante que todas as letras do nome estaram em letras de forma
         String novoCpf = funcionario.getCpf()
                 .replace(".", "")
                 .replace("-", "");
         String novoNome = funcionario.getNome().toUpperCase(Locale.ROOT);
+
+        if(repository.existCPFJaCadastrado(novoCpf))
+            throw new EntidadeJaExiste("Funcionario já existe com este cpf: " + funcionario.getCpf());
+
+        empresaService.buscarEmpresa(funcionario.getEmpresa().getId());
 
         funcionario.setCpf(novoCpf);
         funcionario.setNome(novoNome);

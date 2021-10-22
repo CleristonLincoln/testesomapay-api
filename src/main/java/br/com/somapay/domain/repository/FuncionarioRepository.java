@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> {
@@ -22,4 +23,7 @@ public interface FuncionarioRepository extends JpaRepository<Funcionario, Long> 
             "                  INNER JOIN financeiro.conta_funcionario cf ON f.conta_id = cf.conta_id " +
             "                  INNER JOIN financeiro.conta c ON cf.conta_id = c.id", nativeQuery = true)
     List<Object[]> buscarFuncionariosResumido();
+
+    @Query(value = "SELECT EXISTS(SELECT * FROM base.funcionario f WHERE f.cpf = :cpf)", nativeQuery = true)
+    Boolean existCPFJaCadastrado(String cpf);
 }
