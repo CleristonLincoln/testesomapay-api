@@ -27,7 +27,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -114,35 +113,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
         String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.",
                 ex.getRequestURL());
-
-        Problem problem = createProblemBuilder(status, problemType, detail)
-                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-                .build();
-
-        return handleExceptionInternal(ex, problem, headers, status, request);
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
-                                                        HttpStatus status, WebRequest request) {
-
-        if (ex instanceof MethodArgumentTypeMismatchException) {
-            return handleMethodArgumentTypeMismatch(
-                    (MethodArgumentTypeMismatchException) ex, headers, status, request);
-        }
-
-        return super.handleTypeMismatch(ex, headers, status, request);
-    }
-
-    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException ex, HttpHeaders headers,
-            HttpStatus status, WebRequest request) {
-
-        ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
-
-        String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
-                        + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
-                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
 
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
