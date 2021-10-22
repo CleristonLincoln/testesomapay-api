@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ContaFuncionarioRepository extends JpaRepository<ContaFuncionario, Long> {
+    ContaFuncionario findByFuncionarioId(Long id);
 }

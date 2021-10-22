@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -38,7 +39,7 @@ public class EmpresaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Empresa salvarEmrpesa(@RequestBody Empresa empresa) {
+    public Empresa salvarEmrpesa(@RequestBody @Valid Empresa empresa) {
         return service.salvar(empresa);
     }
 

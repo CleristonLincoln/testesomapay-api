@@ -3,7 +3,6 @@ package br.com.somapay.domain.service;
 import br.com.somapay.domain.exceptions.EntidadeEmUsoException;
 import br.com.somapay.domain.exceptions.EntidadeJaExiste;
 import br.com.somapay.domain.exceptions.EntidadeNaoEncontradaException;
-import br.com.somapay.domain.model.ContaEmpresa;
 import br.com.somapay.domain.model.Empresa;
 import br.com.somapay.domain.repository.EmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class EmpresaService {
@@ -58,11 +55,12 @@ public class EmpresaService {
 
 
     public ResponseEntity<Empresa> buscarEmpresa(Long id) {
+        return ResponseEntity.ok(validarSeEmpresaExixte(id));
+    }
 
-        Empresa empresa = repository.findById(id).orElse(null);
-        if (empresa == null) {
-            throw new EntidadeNaoEncontradaException("Empresa não encontrada com o id: " + id);
-        }
-        return ResponseEntity.ok(empresa);
+
+    public Empresa validarSeEmpresaExixte(Long id){
+       return repository.findById(id).orElseThrow(() ->
+               new EntidadeNaoEncontradaException("Empresa não encontrada com o id: " + id));
     }
 }
