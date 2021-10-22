@@ -30,6 +30,7 @@ public class EmpresaService {
         // cria automaticamente a conta da empresa
         empresaSalva.setContaEmpresa(contaEmpresaService.criarNovaContaEmpresa(empresa.getId()));
 
+        // salva/ update empresa com a conta criada
         return repository.save(empresa);
     }
 

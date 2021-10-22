@@ -1,6 +1,7 @@
 package br.com.somapay.api.controller;
 
 import br.com.somapay.domain.model.Funcionario;
+import br.com.somapay.domain.model.to.FuncionariosResumidoTO;
 import br.com.somapay.domain.service.FuncionarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,12 +30,18 @@ public class FuncionarioController {
         return service.listarTodosFuncionarios();
     }
 
+    @GetMapping("resumo")
+    public List<FuncionariosResumidoTO> getAllFuncionariosResumido(){
+        return service.listarTodosFuncionariosResumido();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Funcionario> buscarFuncionario(@PathVariable Long id){
         return service.buscarFuncionario(id);
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Funcionario salvar(@RequestBody @Valid  Funcionario funcionario){
         return service.salvar(funcionario);
     }

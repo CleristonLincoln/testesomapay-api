@@ -45,39 +45,50 @@ public class TransferenciaServie {
      */
     public void criarTransferencia(TransferenciaDTO transferenciaDTO) {
 
-        if (transferenciaDTO.getOrigemId() == null){
+        if (transferenciaDTO.getOrigemId() == null)
             gerarSaldoEmpresa(transferenciaDTO);
-        }
 
-        if (transferenciaDTO.getDestinoId() == null){
-            Empresa empresa = empresaService.buscarEmpresa(transferenciaDTO.getOrigemId()).getBody();
-            TransferenciaFuncionarioOutro transferenciaOutroEmpresa = new TransferenciaFuncionarioOutro();
+        if (transferenciaDTO.getDestinoId() == null)
+            transferirFuncionarioOutro(transferenciaDTO);
 
-        }
+        if (transferenciaDTO.getOrigemId() != null && transferenciaDTO.getDestinoId() != null)
+            transferirEmpresaFuncionario(transferenciaDTO);
 
-        if (transferenciaDTO.getOrigemId() != null && transferenciaDTO.getDestinoId() != null){
+    }
 
-            Empresa empresa = empresaService.validarSeEmpresaExixte(transferenciaDTO.getOrigemId());
+    private void transferirEmpresaFuncionario(TransferenciaDTO transferenciaDTO) {
+        Empresa empresa = empresaService.validarSeEmpresaExixte(transferenciaDTO.getOrigemId());
 
-            Funcionario funcionario = funcionarioService.validarSeFuncionarioExiste(transferenciaDTO.getDestinoId());
+        Funcionario funcionario = funcionarioService.validarSeFuncionarioExiste(transferenciaDTO.getDestinoId());
 
-            TransferenciaEmpresaFuncionario transferenciaEmpresaFuncionario = new TransferenciaEmpresaFuncionario(
-                    empresa,
-                    funcionario,
-                    "Transferencia de saldo: " + empresa.getCnpj() + " para "+ funcionario.getCpf(),
-                    LocalDateTime.now(),
-                    null,
-                    empresa.getContaEmpresa(),
-                    transferenciaDTO.getValor()
-            );
+        TransferenciaEmpresaFuncionario transferenciaEmpresaFuncionario = new TransferenciaEmpresaFuncionario(
+                empresa,
+                funcionario,
+                "Transferencia de saldo: " + empresa.getCnpj() + " para "+ funcionario.getCpf(),
+                LocalDateTime.now(),
+                empresa.getContaEmpresa(),
+                funcionario.getContaFuncionario(),
+                transferenciaDTO.getValor()
+        );
 
-            transferenciaEmpresaFuncionarioService.salvarTransferencia(transferenciaEmpresaFuncionario);
+        transferenciaEmpresaFuncionarioService.salvarTransferencia(transferenciaEmpresaFuncionario);
 
-            contaEmpresaService.retiradaSaldo(empresa.getContaEmpresa(), transferenciaDTO.getValor());
-            contaFuncionarioService.acrescentarSaldo(funcionario.getContaFuncionario(), transferenciaDTO.getValor());
-        }
+        contaEmpresaService.retiradaSaldo(empresa.getContaEmpresa(), transferenciaDTO.getValor());
+        contaFuncionarioService.acrescentarSaldo(funcionario.getContaFuncionario(), transferenciaDTO.getValor());
+    }
 
-
+    private void transferirFuncionarioOutro(TransferenciaDTO transferenciaDTO) {
+        Funcionario funcionario = funcionarioService.validarSeFuncionarioExiste(transferenciaDTO.getOrigemId());
+        TransferenciaFuncionarioOutro transferenciaOutroEmpresa = new TransferenciaFuncionarioOutro(
+                funcionario,
+                "Saque Caixa pelo funcionario",
+                LocalDateTime.now(),
+                funcionario.getContaFuncionario(),
+                null,
+                transferenciaDTO.getValor()
+        );
+        transferenciaFuncionarioOutroService.salvarTransferencia(transferenciaOutroEmpresa);
+        contaFuncionarioService.retirarSaldo(funcionario.getContaFuncionario(), transferenciaDTO.getValor());
     }
 
     private void gerarSaldoEmpresa(TransferenciaDTO transferenciaDTO) {
