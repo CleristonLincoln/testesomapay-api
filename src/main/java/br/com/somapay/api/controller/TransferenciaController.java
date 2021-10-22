@@ -1,4 +1,4 @@
-package br.com.somapay.api;
+package br.com.somapay.api.controller;
 
 import br.com.somapay.domain.model.to.TransferenciaDTO;
 import br.com.somapay.domain.service.TransferenciaServie;

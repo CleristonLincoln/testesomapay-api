@@ -25,21 +25,28 @@ public class FuncionarioService {
     @Autowired
     private ContaFuncionarioService contaFuncionarioService;
 
+    @Autowired
+    private EmpresaService empresaService;
+
     public List<Funcionario> listarTodosFuncionarios() {
         return repository.findAll();
     }
 
+    public Funcionario validarSeFuncionarioExiste(Long id){
+        return repository.findById(id).orElseThrow(()->
+                new EntidadeNaoEncontradaException("Não foi possivel localizar o funcionário"));
+    }
 
     public ResponseEntity<Funcionario> buscarFuncionario(Long id) {
-        Funcionario funcionario = repository.findById(id).orElse(null);
 
-        if (funcionario == null){
-            throw new EntidadeNaoEncontradaException("Não foi possivel localizar o funcionário");
-        }
-        return ResponseEntity.ok(funcionario);
+        return ResponseEntity.ok(validarSeFuncionarioExiste(id));
     }
 
     public Funcionario salvar(Funcionario funcionario) {
+
+        empresaService.buscarEmpresa(funcionario.getEmpresa().getId());
+
+
      // converte cpf para sem caracteres especiais e garante que todas as letras do nome estaram em letras de forma
         String novoCpf = funcionario.getCpf()
                 .replace(".", "")

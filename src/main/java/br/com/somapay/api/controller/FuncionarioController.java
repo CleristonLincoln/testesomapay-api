@@ -1,4 +1,4 @@
-package br.com.somapay.api;
+package br.com.somapay.api.controller;
 
 import br.com.somapay.domain.model.Funcionario;
 import br.com.somapay.domain.service.FuncionarioService;
@@ -35,7 +35,7 @@ public class FuncionarioController {
     }
 
     @PostMapping
-    public Funcionario salvar(@RequestBody Funcionario funcionario){
+    public Funcionario salvar(@RequestBody @Valid  Funcionario funcionario){
         return service.salvar(funcionario);
     }
 

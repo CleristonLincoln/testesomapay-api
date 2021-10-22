@@ -1,5 +1,6 @@
 package br.com.somapay.domain.service;
 
+import br.com.somapay.domain.model.ContaEmpresa;
 import br.com.somapay.domain.model.Empresa;
 import br.com.somapay.domain.model.Funcionario;
 import br.com.somapay.domain.model.TransferenciaEmpresaFuncionario;
@@ -56,9 +57,9 @@ public class TransferenciaServie {
 
         if (transferenciaDTO.getOrigemId() != null && transferenciaDTO.getDestinoId() != null){
 
-            Empresa empresa = empresaService.buscarEmpresa(transferenciaDTO.getOrigemId()).getBody();
+            Empresa empresa = empresaService.validarSeEmpresaExixte(transferenciaDTO.getOrigemId());
 
-            Funcionario funcionario = funcionarioService.buscarFuncionario(transferenciaDTO.getDestinoId()).getBody();
+            Funcionario funcionario = funcionarioService.validarSeFuncionarioExiste(transferenciaDTO.getDestinoId());
 
             TransferenciaEmpresaFuncionario transferenciaEmpresaFuncionario = new TransferenciaEmpresaFuncionario(
                     empresa,
