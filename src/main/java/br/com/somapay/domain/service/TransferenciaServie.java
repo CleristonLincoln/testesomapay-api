@@ -1,6 +1,6 @@
 package br.com.somapay.domain.service;
 
-import br.com.somapay.domain.model.ContaEmpresa;
+import br.com.somapay.domain.exceptions.SaldoException;
 import br.com.somapay.domain.model.Empresa;
 import br.com.somapay.domain.model.Funcionario;
 import br.com.somapay.domain.model.TransferenciaEmpresaFuncionario;
@@ -10,6 +10,7 @@ import br.com.somapay.domain.model.to.TransferenciaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -60,7 +61,7 @@ public class TransferenciaServie {
         Empresa empresa = empresaService.validarSeEmpresaExixte(transferenciaDTO.getOrigemId());
 
         Funcionario funcionario = funcionarioService.validarSeFuncionarioExiste(transferenciaDTO.getDestinoId());
-
+        validarSeEmpresaPossuiSaldo(empresa, transferenciaDTO.getValor());
         TransferenciaEmpresaFuncionario transferenciaEmpresaFuncionario = new TransferenciaEmpresaFuncionario(
                 empresa,
                 funcionario,
@@ -79,6 +80,9 @@ public class TransferenciaServie {
 
     private void transferirFuncionarioOutro(TransferenciaDTO transferenciaDTO) {
         Funcionario funcionario = funcionarioService.validarSeFuncionarioExiste(transferenciaDTO.getOrigemId());
+
+        validarSeFuncionarioPossuiSaldo(funcionario, transferenciaDTO.getValor());
+
         TransferenciaFuncionarioOutro transferenciaOutroEmpresa = new TransferenciaFuncionarioOutro(
                 funcionario,
                 "Saque Caixa pelo funcionario",
@@ -89,6 +93,16 @@ public class TransferenciaServie {
         );
         transferenciaFuncionarioOutroService.salvarTransferencia(transferenciaOutroEmpresa);
         contaFuncionarioService.retirarSaldo(funcionario.getContaFuncionario(), transferenciaDTO.getValor());
+    }
+
+    private void validarSeFuncionarioPossuiSaldo(Funcionario funcionario, BigDecimal valor) {
+        if(funcionario.getContaFuncionario().getSaldo().compareTo(valor) <= 0)
+            throw new SaldoException("Funcionário não possui saldo para realizar a transação");
+    }
+
+    private void validarSeEmpresaPossuiSaldo(Empresa empresa, BigDecimal valor) {
+        if(empresa.getContaEmpresa().getSaldo().compareTo(valor) <= 0)
+            throw new SaldoException("Empresa não possui saldo para realizar a transação");
     }
 
     private void gerarSaldoEmpresa(TransferenciaDTO transferenciaDTO) {

@@ -1,11 +1,8 @@
 package br.com.somapay.domain.service;
 
 import br.com.somapay.domain.model.ContaEmpresa;
-import br.com.somapay.domain.model.ContaFuncionario;
 import br.com.somapay.domain.model.enums.TipoConta;
-import br.com.somapay.domain.model.to.TransferenciaDTO;
 import br.com.somapay.domain.repository.ContaEmpresaRepository;
-import br.com.somapay.domain.repository.EmpresaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -3,6 +3,7 @@ package br.com.somapay.api.exceptionhandler;
 import br.com.somapay.domain.exceptions.EntidadeEmUsoException;
 import br.com.somapay.domain.exceptions.EntidadeNaoEncontradaException;
 import br.com.somapay.domain.exceptions.NegocioException;
+import br.com.somapay.domain.exceptions.SaldoException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
@@ -195,6 +196,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         HttpStatus status = HttpStatus.CONFLICT;
         ProblemType problemType = ProblemType.ENTIDADE_EM_USO;
+        String detail = ex.getMessage();
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(SaldoException.class)
+    public ResponseEntity<?> handleSaldoException(SaldoException ex, WebRequest request) {
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType problemType = ProblemType.ERRO_NEGOCIO;
         String detail = ex.getMessage();
 
         Problem problem = createProblemBuilder(status, problemType, detail)
