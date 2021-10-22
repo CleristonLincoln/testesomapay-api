@@ -4,17 +4,12 @@ import br.com.somapay.domain.exceptions.EntidadeNaoEncontradaException;
 import br.com.somapay.domain.model.ContaFuncionario;
 import br.com.somapay.domain.model.Funcionario;
 import br.com.somapay.domain.repository.FuncionarioRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class FuncionarioService {
@@ -57,10 +52,11 @@ public class FuncionarioService {
         funcionario.setNome(novoNome);
 
         Funcionario funcionarioSalvo = repository.save(funcionario);
+       ContaFuncionario contaFuncionario =  contaFuncionarioService.criarNovaContaFuncionario(funcionario.getId());
+        funcionarioSalvo.setContaFuncionario(contaFuncionario);
 
-        // criar conta automaticamente
-        funcionarioSalvo.setContaFuncionario(contaFuncionarioService.criarNovaContaFuncionario(funcionario.getId()));
-
+        // este save da um update em funcionario com a conta dele que foi criada
+        repository.save(funcionarioSalvo);
         return funcionario;
     }
 }

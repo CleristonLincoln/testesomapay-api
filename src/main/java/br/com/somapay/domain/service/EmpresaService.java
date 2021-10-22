@@ -39,20 +39,6 @@ public class EmpresaService {
         }
     }
 
-    public void excluir(Long cozinhaId) {
-        try {
-            repository.deleteById(cozinhaId);
-
-        } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de empresa com código %d", cozinhaId));
-
-        } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(
-                    String.format("Empresa de código %d não pode ser removida, pois está em uso", cozinhaId));
-        }
-    }
-
 
     public ResponseEntity<Empresa> buscarEmpresa(Long id) {
         return ResponseEntity.ok(validarSeEmpresaExixte(id));

@@ -1,4 +1,4 @@
-package br.com.somapay.api;
+package br.com.somapay.api.controller;
 
 import br.com.somapay.domain.model.Empresa;
 import br.com.somapay.domain.repository.EmpresaRepository;

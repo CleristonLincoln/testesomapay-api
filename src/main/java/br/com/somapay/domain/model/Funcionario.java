@@ -41,7 +41,7 @@ public class Funcionario {
 
     @OneToOne
     @JsonIgnoreProperties("funcionario")
-    @JoinColumn(name = "conta_funcionario_id")
+    @JoinColumn(name = "conta_id")
     private ContaFuncionario contaFuncionario;
 
 }

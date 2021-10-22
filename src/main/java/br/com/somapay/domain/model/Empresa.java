@@ -35,7 +35,7 @@ public class Empresa {
 
     @OneToOne
     @JsonIgnoreProperties("empresa")
-    @JoinColumn(name = "conta_empresa_id")
+    @JoinColumn(name = "conta_id")
     private ContaEmpresa contaEmpresa;
 
 }
